@@ -42,48 +42,68 @@
    kubectl get kafkauser scram-sha-user -o yaml
    ```
    * The condition should be ready:
-     ```
-     TODO
+     ```yaml
+     status:
+       conditions:
+         - lastTransitionTime: "2021-08-09T19:20:29.029522Z"
+           status: "True"
+           type: Ready
      ```
    * The custom password should also in the user secret:
      ```
      kubectl get secret scram-sha-user -o jsonpath='{.data.password}' | base64 -d
      ```
    * We can also check that we can connect with a client:
-     ```
-     TODO
-     ```
+     * List metadata
+       ```
+       kubectl run kafka-metadata -ti --image=edenhill/kafkacat:1.6.0 --rm=true --restart=Never -- -b my-cluster-kafka-bootstrap:9092 -X security.protocol=SASL_PLAINTEXT -X sasl.mechanism=SCRAM-SHA-512 -X sasl.username=scram-sha-user -X sasl.password=myRandomAndSecretPassword -L
+       ```
+     * Produce and consume messages
+       ```
+       kubectl run kafka-producer -ti --image=edenhill/kafkacat:1.6.0 --rm=true --restart=Never -- -b my-cluster-kafka-bootstrap:9092 -X security.protocol=SASL_PLAINTEXT -X sasl.mechanism=SCRAM-SHA-512 -X sasl.username=scram-sha-user -X sasl.password=myRandomAndSecretPassword -t my-topic -P
+       kubectl run kafka-consumer -ti --image=edenhill/kafkacat:1.6.0 --rm=true --restart=Never -- -b my-cluster-kafka-bootstrap:9092 -X security.protocol=SASL_PLAINTEXT -X sasl.mechanism=SCRAM-SHA-512 -X sasl.username=scram-sha-user -X sasl.password=myRandomAndSecretPassword -C -t my-topic -o beginning
+       ```
 5. You can also try what happens when the secret does not exist.
    The User Operator will not generate random password but wait for the secret to be created.
    You can try that by creating [`scram-sha-user2.yaml`](./scram-sha-user.yaml):
    ```
    kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/scram-sha-user2.yaml
    ```
-6. Create the secret and check that the next reconciliation creates the user:
+6. The user should fail to create with the following condition:
+   ```yaml
+   status:
+     conditions:
+       - lastTransitionTime: "2021-08-09T19:16:51.116530Z"
+         message: Secret scram-sha-user-custom-password with requested user password does not exist.
+         reason: InvalidResourceException
+         status: "True"
+         type: NotReady
+   ```
+7. Create the secret and check that the next reconciliation creates the user:
    ```
    kubectl create secret generic scram-sha-user2-custom-password --from-literal=customPassword='myOtherRandomAndSecretPassword'
    ```
 
 ### `tls-external` authentication
 
-7. Create a `KafkaUser` with `tls-external` authentication type.
+8. Create a `KafkaUser` with `tls-external` authentication type.
    You can use the [`tls-external-user.yaml`](./tls-external-user.yaml) file from this repository:
    ```
    kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/tls-external-user.yaml
    ```
-8. Check that the user was created, but without generating the certificate
+9. Check that the user was created, but without generating the certificate
    * Check that the user secret was not created:
      ```
      kubectl get secret tls-external-user
      ```
    * Check that the ACLs were set for the user `CN=tls-external-user`:
      ```
-     TODO
+     kubectl exec -ti my-cluster-zookeeper-0 -- bin/zookeeper-shell.sh localhost:12181 get /kafka-acl/Topic/my-topic
      ```
 
 ### Cleanup
 
-9. Delete the users and the Kafka cluster after the demo:
+10. Delete the users and the Kafka cluster after the demo:
    ```
    kubectl delete kafka my-cluster
    kubectl delete kafkauser tls-external-user scram-sha-user scram-sha-user2
@@ -96,7 +116,7 @@
    * If you deployed it using YAML files, you can just edit the deployment file and add:
      ```yaml
      - name: STRIMZI_NETWORK_POLICY_GENERATION
-       value: false
+       value: "false"
      ```
    * If you use Operator Hub, you can set it in the `Subscription` resource:
      ```yaml
@@ -105,7 +125,7 @@
      config:
        env:
          - name: STRIMZI_NETWORK_POLICY_GENERATION
-         value: false
+         value: "false"
      ```
 2. Deploy a Kafka cluster.
    You can use the [`kafka.yaml`](./kafka.yaml) file from this repository:
