@@ -11,7 +11,7 @@
 1. Deploy a Kafka cluster with different listeners using TLS and SCRAM-SHA-512 authentication and User Operator enabled.
    You can use the [`kafka.yaml`](./kafka.yaml) file from this repository:
    ```
-   kubectl apply -f kafka.yaml
+   kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/kafka.yaml
    ```
 
 ### Custom Password
@@ -35,7 +35,7 @@
    ```
    * You can use the [`scram-sha-user.yaml`](./scram-sha-user.yaml) file from this repository:
      ```
-     kubectl apply -f scram-sha-user.yaml
+     kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/scram-sha-user.yaml
      ```
 4. Check the created user:
    ```
@@ -57,7 +57,7 @@
    The User Operator will not generate random password but wait for the secret to be created.
    You can try that by creating [`scram-sha-user2.yaml`](./scram-sha-user.yaml):
    ```
-   kubectl apply -f scram-sha-user2.yaml
+   kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/scram-sha-user2.yaml
    ```
 6. Create the secret and check that the next reconciliation creates the user:
    ```
@@ -69,7 +69,7 @@
 7. Create a `KafkaUser` with `tls-external` authentication type.
    You can use the [`tls-external-user.yaml`](./tls-external-user.yaml) file from this repository:
    ```
-   kubectl apply -f tls-external-user.yaml
+   kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/tls-external-user.yaml
    ```
 8. Check that the user was created, but without generating the certificate
    * Check that the user secret was not created:
@@ -91,3 +91,35 @@
    ```
 
 ## Disabling Network Policies
+
+1. Edit the Cluster Operator deployment and set the environment variable `STRIMZI_NETWORK_POLICY_GENERATION` to `false`.
+   * If you deployed it using YAML files, you can just edit the deployment file and add:
+     ```yaml
+     - name: STRIMZI_NETWORK_POLICY_GENERATION
+       value: false
+     ```
+   * If you use Operator Hub, you can set it in the `Subscription` resource:
+     ```yaml
+     spec:
+     # ...
+     config:
+       env:
+         - name: STRIMZI_NETWORK_POLICY_GENERATION
+         value: false
+     ```
+2. Deploy a Kafka cluster.
+   You can use the [`kafka.yaml`](./kafka.yaml) file from this repository:
+   ```
+   kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/kafka.yaml
+   ```
+3. Check the effect of the disabled Network Policies
+   * No network policies are created by the operator:
+     ```
+     kubectl get networkpolicies
+     ```
+   * If you create your own Network Policy, the operator will not overwrite it.
+     You can use [`network-policy.yaml`](./network-policy.yaml) file from this repository as an example:
+     ```
+     kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.25.0/network-policy.yaml
+     kubectl get networkpolicy -w
+     ```
