@@ -1,0 +1,37 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: my-connect
+  labels:
+    app: my-connect
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  replicas: 1
+  bootstrapServers: my-cluster-kafka-bootstrap:9092
+  config:
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+  build:
+    output:
+      type: docker
+      image: my-registry:5000/myproject/kafka-connect:latest
+    # Use the `output` section bellow when you need to authenticate before pushing to the Container Registry
+    # output:
+    #   type: docker
+    #   image: docker.io/my-org/kafka-connect:latest
+    #   pushSecret: docker-credentials
+    plugins:
+      - name: echo-sink-connector
+        artifacts:
+          - type: jar
+            url: https://github.com/scholzj/echo-sink/releases/download/1.2.0/echo-sink-1.2.0.jar
+            sha512sum: d7240e854ee97a266e65716f963ea7559b678aacc428fbee2d3765dd9500020d71878e0b454dece36ca8130e182389a67928ed2af8ebbcd0dfaf4ca364a7fdef
+      - name: camel-timer-connector
+        artifacts:
+          - type: maven
+            group: org.apache.camel.kafkaconnector
+            artifact: camel-timer-kafka-connector
+            version: 0.11.0

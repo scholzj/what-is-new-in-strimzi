@@ -1,0 +1,51 @@
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: timer-topic
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  partitions: 1
+  replicas: 3
+  config:
+    retention.ms: 7200000
+    segment.bytes: 107374182
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: camel-timer-connector
+  labels:
+    strimzi.io/cluster: my-connect
+spec:
+  class: CamelTimerSourceConnector
+  tasksMax: 1
+  config:
+    topics: timer-topic
+    camel.source.path.timerName: timer
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable: false
+    transforms: HoistField,InsertField,ReplaceField
+    transforms.HoistField.type: org.apache.kafka.connect.transforms.HoistField$Value
+    transforms.HoistField.field: originalValue
+    transforms.InsertField.type: org.apache.kafka.connect.transforms.InsertField$Value
+    transforms.InsertField.timestamp.field: timestamp
+    transforms.InsertField.static.field: message
+    transforms.InsertField.static.value: "Hello World"
+    transforms.ReplaceField.type: org.apache.kafka.connect.transforms.ReplaceField$Value
+    transforms.ReplaceField.blacklist: originalValue
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: echo-sink-timer-connector
+  labels:
+    strimzi.io/cluster: my-connect
+spec:
+  class: EchoSink
+  tasksMax: 3
+  config:
+    level: "INFO"
+    topics: "timer-topic"
