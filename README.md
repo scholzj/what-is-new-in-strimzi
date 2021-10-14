@@ -14,4 +14,3 @@ The demos / labs for Strimzi 0.25.0 are in the [0.25.0 subdirectory](./0.25.0/):
   * Custom passwords for SCRAM-SHA-512 users
   * `tls-external` authentication in `KafkaUser`
 * Disabling Network Policies
-
