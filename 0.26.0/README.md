@@ -4,7 +4,7 @@
 
 * Install Strimzi 0.26.0 using one of the available methods
 
-## User Operator
+## Kafka Connect Build
 
 ### Preparation
 
