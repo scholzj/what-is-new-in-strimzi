@@ -2,6 +2,12 @@
 
 This repository contains the demos / labs for the _What's new in Strimzi_ videos.
 
+## Strimzi 0.27.0
+
+The demos / labs for Strimzi 0.27.0 are in the [0.27.0 subdirectory](./0.27.0/):
+* AArch64 support
+* Control Plane Listener
+
 ## Strimzi 0.26.0
 
 The demos / labs for Strimzi 0.26.0 are in the [0.26.0 subdirectory](./0.26.0/):
