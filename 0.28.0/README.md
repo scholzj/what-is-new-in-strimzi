@@ -14,8 +14,35 @@
    kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.28.0/kafka.yaml
    ```
 
-3. You should see that the Strimzi Cluster Operator is crashlooping with an error similar to this:
+3. You should see that the Strimzi Cluster Operator is crash-looping with an error similar to this:
    ```
+   Exception in thread "main" io.fabric8.kubernetes.client.KubernetesClientException: An error has occurred.
+      at io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:103)
+      at io.fabric8.kubernetes.client.KubernetesClientException.launderThrowable(KubernetesClientException.java:97)
+      at io.fabric8.kubernetes.client.utils.HttpClientUtils.applyCommonConfiguration(HttpClientUtils.java:214)
+      at io.fabric8.kubernetes.client.okhttp.OkHttpClientFactory.createHttpClient(OkHttpClientFactory.java:89)
+      at io.fabric8.kubernetes.client.utils.HttpClientUtils.createHttpClient(HttpClientUtils.java:164)
+      at io.fabric8.kubernetes.client.BaseClient.<init>(BaseClient.java:48)
+      at io.fabric8.kubernetes.client.BaseClient.<init>(BaseClient.java:40)
+      at io.fabric8.kubernetes.client.BaseKubernetesClient.<init>(BaseKubernetesClient.java:151)
+      at io.fabric8.kubernetes.client.DefaultKubernetesClient.<init>(DefaultKubernetesClient.java:34)
+      at io.strimzi.operator.cluster.Main.main(Main.java:75)
+   Caused by: java.security.KeyStoreException: sun.security.pkcs11.wrapper.PKCS11Exception: CKR_SESSION_READ_ONLY
+      at jdk.crypto.cryptoki/sun.security.pkcs11.P11KeyStore.engineSetEntry(P11KeyStore.java:1049)
+      at jdk.crypto.cryptoki/sun.security.pkcs11.P11KeyStore.engineSetCertificateEntry(P11KeyStore.java:515)
+      at java.base/java.security.KeyStore.setCertificateEntry(KeyStore.java:1235)
+      at io.fabric8.kubernetes.client.internal.CertUtils.createTrustStore(CertUtils.java:100)
+      at io.fabric8.kubernetes.client.internal.CertUtils.createTrustStore(CertUtils.java:74)
+      at io.fabric8.kubernetes.client.internal.SSLUtils.trustManagers(SSLUtils.java:140)
+      at io.fabric8.kubernetes.client.internal.SSLUtils.trustManagers(SSLUtils.java:90)
+      at io.fabric8.kubernetes.client.utils.HttpClientUtils.applyCommonConfiguration(HttpClientUtils.java:203)
+      ... 7 more
+   Caused by: sun.security.pkcs11.wrapper.PKCS11Exception: CKR_SESSION_READ_ONLY
+      at jdk.crypto.cryptoki/sun.security.pkcs11.wrapper.PKCS11.C_CreateObject(Native Method)
+      at jdk.crypto.cryptoki/sun.security.pkcs11.wrapper.PKCS11$FIPSPKCS11.C_CreateObject(PKCS11.java:1950)
+      at jdk.crypto.cryptoki/sun.security.pkcs11.P11KeyStore.storeCert(P11KeyStore.java:1567)
+      at jdk.crypto.cryptoki/sun.security.pkcs11.P11KeyStore.engineSetEntry(P11KeyStore.java:1045)
+      ... 14 more
    ```
    And no Kafka cluster is deployed.
 
@@ -26,7 +53,7 @@
    ```
 5. Watch the operator pod to recreate and start deploying the Kafka cluster.
 
-## `StrimziPodSets`
+## StrimziPodSets
 
 6. Check the existing Kafka cluster.
    with the `kubectl get statefulsets` command you should see the StatefulSets which it uses to manage the pods.
