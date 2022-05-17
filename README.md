@@ -2,6 +2,13 @@
 
 This repository contains the demos / labs for the _What's new in Strimzi_ videos.
 
+## Strimzi 0.29.0
+
+The demos / labs for Strimzi 0.29.0 are in the [0.29.0 subdirectory](./0.29.0/):
+* New Cruise Control rebalance modes
+* `StrimziPodSets` (once again)
+* (Experimental) KRaft mode
+
 ## Strimzi 0.28.0
 
 The demos / labs for Strimzi 0.28.0 are in the [0.28.0 subdirectory](./0.28.0/):
