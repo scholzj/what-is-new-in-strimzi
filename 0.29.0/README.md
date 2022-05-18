@@ -141,8 +141,8 @@ _This is experimental mode which should be used only for development and testing
 15. Wait for the deployment to complete and check that ZooKeeper is indeed missing.
     Test the cluster by sending and receiving some messages.
     ```
-    kubectl run kafka-producer -ti --image=quay.io/strimzi/kafka:0.29.0-rc1-kafka-3.2.0 --rm=true --restart=Never -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
-    kubectl run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.29.0-rc1-kafka-3.2.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic --from-beginning
+    kubectl run kafka-producer -ti --image=quay.io/strimzi/kafka:0.29.0-kafka-3.2.0 --rm=true --restart=Never -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
+    kubectl run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.29.0-kafka-3.2.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic --from-beginning
     ```
 
 ### Cleanup
