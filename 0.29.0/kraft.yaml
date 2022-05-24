@@ -29,7 +29,7 @@ spec:
         type: persistent-claim
         size: 100Gi
         deleteClaim: true
-  # KRaft mode doesn't use Kafka. But the `.spec.zookeeper` section is currently required by the Kafka CRD. 
+  # KRaft mode doesn't use ZooKeeper. But the `.spec.zookeeper` section is currently required by the Kafka CRD. 
   # So we need to specify it although it is not really used.
   zookeeper:
     replicas: 3
