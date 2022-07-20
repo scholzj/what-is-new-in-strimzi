@@ -4,6 +4,12 @@ This repository contains the demos / labs for the _What's new in Strimzi_ videos
 
 ## Strimzi 0.29.0
 
+The demos / labs for Strimzi 0.30.0 are in the [0.30.0 subdirectory](./0.30.0/):
+* `StrimziPodSets` (now enabled by default 😉)
+* Restart Events
+
+## Strimzi 0.29.0
+
 The demos / labs for Strimzi 0.29.0 are in the [0.29.0 subdirectory](./0.29.0/):
 * New Cruise Control rebalance modes
 * `StrimziPodSets` (once again)
