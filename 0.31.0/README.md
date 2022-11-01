@@ -105,7 +105,7 @@
 
 ### Cleanup
 
-7. Once done you can delete all the Strimzi resources used during the demo:
+9. Once done you can delete all the Strimzi resources used during the demo:
    ```
    kubectl delete $(kubectl get strimzi -o name)
    ```
