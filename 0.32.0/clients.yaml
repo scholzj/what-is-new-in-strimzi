@@ -1,0 +1,130 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: my-topic
+  labels:
+      strimzi.io/cluster: my-cluster
+spec:
+  replicas: 3
+  partitions: 12
+---
+
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaUser
+metadata:
+  name: client-example
+  labels:
+    strimzi.io/cluster: my-cluster
+spec:
+  authentication:
+    type: tls
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: my-topic
+        operations: 
+          - Create
+          - Describe
+          - Read
+          - Write
+      - resource:
+          type: group
+          name: example-consumer-group
+        operations: 
+          - Read
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: example-producer
+  name: example-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-producer
+  template:
+    metadata:
+      labels:
+        app: example-producer
+    spec:
+      containers:
+      - name: example-producer
+        image: ghcr.io/scholzj/what-is-new-in-strimzi:0.32.0-example-producer
+        env:
+          - name: CA_CRT
+            valueFrom:
+              secretKeyRef:
+                name: my-cluster-cluster-ca-cert
+                key: ca.crt
+          - name: USER_CRT
+            valueFrom:
+              secretKeyRef:
+                name: client-example
+                key: user.crt
+          - name: USER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: client-example
+                key: user.key
+          - name: BOOTSTRAP_SERVERS
+            value: my-cluster-kafka-tls-bootstrap:9093
+          - name: TOPIC
+            value: my-topic
+          - name: DELAY_MS
+            value: "100"
+          - name: LOG_LEVEL
+            value: "INFO"
+          - name: MESSAGE_COUNT
+            value: "1000000"
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: example-consumer
+  name: example-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-consumer
+  template:
+    metadata:
+      labels:
+        app: example-consumer
+    spec:
+      containers:
+      - name: example-consumer
+        image: ghcr.io/scholzj/what-is-new-in-strimzi:0.32.0-example-consumer
+        env:
+          - name: CA_CRT
+            valueFrom:
+              secretKeyRef:
+                name: my-cluster-cluster-ca-cert
+                key: ca.crt
+          - name: USER_CRT
+            valueFrom:
+              secretKeyRef:
+                name: client-example
+                key: user.crt
+          - name: USER_KEY
+            valueFrom:
+              secretKeyRef:
+                name: client-example
+                key: user.key
+          - name: BOOTSTRAP_SERVERS
+            value: my-cluster-kafka-tls-bootstrap:9093
+          - name: TOPIC
+            value: my-topic
+          - name: GROUP_ID
+            value: example-consumer-group
+          - name: LOG_LEVEL
+            value: "INFO"
+          - name: MESSAGE_COUNT
+            value: "1000000"

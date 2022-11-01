@@ -2,6 +2,19 @@
 
 This repository contains the demos / labs for the _What's new in Strimzi_ videos.
 
+## Strimzi 0.32.0
+
+The demos / labs for Strimzi 0.32.0 are in the [0.32.0 subdirectory](./0.32.0/):
+* `cluster-ip` listener
+* Multiple operations per `ACLRule`
+* Rebalance auto-approval
+
+## Strimzi 0.31.0
+
+The demos / labs for Strimzi 0.31.0 are in the [0.31.0 subdirectory](./0.31.0/):
+* Leader Election
+* Pod Security Providers
+
 ## Strimzi 0.30.0
 
 The demos / labs for Strimzi 0.30.0 are in the [0.30.0 subdirectory](./0.30.0/):
