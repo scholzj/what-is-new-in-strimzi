@@ -19,7 +19,7 @@
 ## Restart Events
 
 4. Edit the Kafka custom resource and disable the topic auto-creation.
-   You can do that using `kubectk edit kafka my-cluster` and adding the following to the `.spec.kafka.config` section:
+   You can do that using `kubectl edit kafka my-cluster` and adding the following to the `.spec.kafka.config` section:
    ```yaml
    auto.create.topics.enable: "false"
    ```
