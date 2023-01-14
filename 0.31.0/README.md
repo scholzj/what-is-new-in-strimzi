@@ -21,7 +21,7 @@
                 fieldRef:
                   fieldPath: metadata.name
    ```
-   The leader election is enabled by default, even through only one replica is used by default.
+   The leader election is enabled by default, even though only one replica is used by default.
    Check the docs for all available options.
 
 3. Scale the Cluster Operator to use 2 replicas.
