@@ -14,7 +14,7 @@
 
 ## Connector auto-restarting
 
-3. Create a new topic `my-topic.
+3. Create a new topic `my-topic`.
    You can use the [`topic.yaml`](./topic.yaml) file from this repository:
    ```
    kubectl apply -f https://raw.githubusercontent.com/scholzj/what-is-new-in-strimzi/main/0.33.0/topic.yaml
