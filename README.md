@@ -2,6 +2,11 @@
 
 This repository contains the demos / labs for the _What's new in Strimzi_ videos.
 
+## Strimzi 0.33.0
+
+The demos / labs for Strimzi 0.33.0 are in the [0.33.0 subdirectory](./0.33.0/):
+* Connector auto-restarting
+
 ## Strimzi 0.32.0
 
 The demos / labs for Strimzi 0.32.0 are in the [0.32.0 subdirectory](./0.32.0/):
