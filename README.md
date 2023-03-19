@@ -2,6 +2,11 @@
 
 This repository contains the demos / labs for the _What's new in Strimzi_ videos.
 
+## Strimzi 0.34.0
+
+The demos / labs for Strimzi 0.34.0 are in the [0.34.0 subdirectory](./0.34.0/):
+* Stable Pod-identities in Kafka Connect
+
 ## Strimzi 0.33.0
 
 The demos / labs for Strimzi 0.33.0 are in the [0.33.0 subdirectory](./0.33.0/):
